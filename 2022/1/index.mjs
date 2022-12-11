@@ -16,4 +16,8 @@ for (let i = 0; i < inputArray.length - 1; i++) {
     sum += currentLine
 }
 
-console.log(calories.sort(function(a,b){return b - a})[0]);
+const sortedCalories = calories.sort(function(a,b){return b - a})
+console.log({
+    topElf: sortedCalories[0],
+    sumOfTopThree: sortedCalories[0] + sortedCalories[1] + sortedCalories[2]
+});

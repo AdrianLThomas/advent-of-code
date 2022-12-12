@@ -3,7 +3,8 @@ import * as fs from 'fs/promises'
 const input = await fs.readFile('input.txt', { encoding: 'utf8' });
 const inputArray = input.split('\n');
 
-let sum = 0;
+let part1Sum = 0;
+let part2Sum = 0;
 for(let i = 0; i < inputArray.length; i++) {
     const [range1, range2] = inputArray[i].split(',');
 
@@ -12,11 +13,17 @@ for(let i = 0; i < inputArray.length; i++) {
 
     const checkA = startA >= startB && endA <= endB;
     const checkB = startB >= startA && endB <= endA;
-    const overlaps = checkA || checkB;
+    const fullyOverlaps = checkA || checkB;
 
-    if (overlaps) {
-        sum++;
+    if (fullyOverlaps) {
+        part1Sum++;
+    }
+
+    // part 2
+    const checkEnds = startA <= endB && startB <= endA
+    if (checkA || checkB || checkEnds) {
+        part2Sum++;
     }
 }
 
-console.log({sum})
+console.log({part1Sum, part2Sum})

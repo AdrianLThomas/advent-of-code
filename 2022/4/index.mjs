@@ -20,10 +20,9 @@ for(let i = 0; i < inputArray.length; i++) {
     }
 
     // part 2
-    const checkEnds = startA <= endB && startB <= endA
-    if (checkA || checkB || checkEnds) {
+    if (startA <= endB && startB <= endA) {
         part2Sum++;
     }
 }
 
-console.log({part1Sum, part2Sum})
+console.log({part1Sum, part2Sum});

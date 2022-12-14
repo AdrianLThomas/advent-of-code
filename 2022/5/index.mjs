@@ -16,23 +16,30 @@ for (let i = 0; i < indexOfHeaders; i++) {
     for (let j = 0; j < crates.length; j++) {
         const value = crates[j].trim();
         if(value) {
-            stacks[j].push(value);
+            stacks[j].unshift(value);
         }
     }
 }
 
-console.log({stacks})
+const stringToInt = (x) => {
+    const num = parseInt(x, 10);
+    if(Number.isInteger(num)) {
+        return num;
+    }
+    return x;
+}
 
 const allInstructions = inputArray.slice(indexOfHeaders + 2);
 for (let i = 0; i < allInstructions.length; i++) {
-    // number of moves
-    // from
-    // to
-    // allInstructions[i]
-    /* 
-        for (let j = 0; j < numberOfMoves; j++) {
-            stacks[to - 1].push(stacks[from - 1].pop());
-            // TODO reverse each stack for push pop? or just use shift/unshift..
-        }
-    */
+    const [,times,,from,,to] = allInstructions[i].split(' ').map(stringToInt)
+
+    for (let j = 0; j < times; j++) {
+        stacks[to - 1].push(stacks[from - 1].pop());
+    }
 }
+
+console.log({
+    topCrates: stacks.map(stack => stack[stack.length - 1])
+                     .map(crate => crate.replace('[','').replace(']',''))
+                     .join('')
+})

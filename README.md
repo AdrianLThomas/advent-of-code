@@ -1,4 +1,4 @@
-# Advent of Code 2022
+# Advent of Code
 
 Probably some of the quickest, dirtiest code I've written (for fun). 
 

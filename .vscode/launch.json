@@ -2,13 +2,11 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "Deno",
-        "type": "pwa-node",
+        "name": "Launch file",
+        "type": "go",
         "request": "launch",
-        "cwd": "${workspaceFolder}",
-        "runtimeExecutable": "deno",
-        "runtimeArgs": ["run", "--inspect-brk", "-A", "${file}"],
-        "attachSimplePort": 9229
+        "mode": "debug",
+        "program": "${file}"
       }
     ]
   }

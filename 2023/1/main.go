@@ -36,7 +36,7 @@ func main() {
 	for scanner.Scan() {
 		thisLine := scanner.Text()
 		for _, namedNumber := range namedNumbers {
-			thisLine = strings.ReplaceAll(thisLine, namedNumber.Key, namedNumber.Key+namedNumber.Value) // concat named number with its value (covers edge case e.g. 'eightwo' is two numbers)
+			thisLine = strings.ReplaceAll(thisLine, namedNumber.Key, namedNumber.Key+namedNumber.Value+namedNumber.Value) // concat named number with its value (covers edge case e.g. 'eightwo' is two numbers)
 		}
 		digits := digitRegexp.FindAllString(thisLine, -1)
 		digitLength := len(digits)

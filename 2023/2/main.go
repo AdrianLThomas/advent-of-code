@@ -8,7 +8,52 @@ import (
 	"strings"
 )
 
-func main() {
+func main() { // part2
+	file, _ := os.Open("input.txt")
+	defer file.Close()
+
+	// split input.txt into lines
+	scanner := bufio.NewScanner(file)
+	cubedCount := 0
+	for scanner.Scan() {
+		thisLine := scanner.Text()
+
+		// split line by colon, part [0] is ID, part [1] is game
+		lineParts := strings.Split(thisLine, ":")
+		// id, _ := strconv.Atoi(strings.Split(lineParts[0], " ")[1])
+		game := lineParts[1]
+
+		// split game by semi colon to get rounds
+		rounds := strings.Split(game, ";")
+
+		// loop each round
+		highest := map[string]int{
+			"red":   0,
+			"green": 0,
+			"blue":  0,
+		}
+		for _, round := range rounds {
+			// split round by comma to get colours
+			colours := strings.Split(round, ", ")
+
+			for _, colour := range colours {
+				// split colours by space to get number and colour
+				colourParts := strings.Split(strings.TrimSpace(colour), " ")
+				number, _ := strconv.Atoi(colourParts[0])
+				colour := colourParts[1]
+
+				if number > highest[colour] {
+					highest[colour] = number
+				}
+			}
+		}
+		cubedCount += highest["red"] * highest["green"] * highest["blue"]
+	}
+
+	fmt.Println(cubedCount)
+}
+
+func main_part1() {
 	file, _ := os.Open("input.txt")
 	defer file.Close()
 

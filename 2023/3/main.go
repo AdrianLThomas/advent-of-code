@@ -30,7 +30,10 @@ func getPartNumber(matrix [][]rune) int {
 			_, err := strconv.Atoi(valueAsString)
 			if err == nil {
 				digit += valueAsString
-				isPart = isSymbolNear(matrix, x, y)
+
+				if !isPart { // if not already a part
+					isPart = isSymbolNear(matrix, x, y)
+				}
 			} else {
 				// we have the number!
 				// fmt.Printf("Digit: %s, Start: %d, End: %d\n", digit, digitStartIndex, digitEndIndex)
@@ -39,7 +42,12 @@ func getPartNumber(matrix [][]rune) int {
 				if isPart {
 					n, _ := strconv.Atoi(digit)
 					partNumber += n
+
+					if n > 0 {
+						fmt.Println("Part:", n)
+					}
 				}
+				isPart = false
 				digit = "" // reset
 			}
 		}

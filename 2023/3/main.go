@@ -12,52 +12,85 @@ func main() {
 	defer file.Close()
 
 	matrix := getMatrix(file)
-	// printMatrix(matrix)
 
 	missingPart := getPartNumber(matrix)
 
-	fmt.Println("Missing Part: ", missingPart)
+	fmt.Println("Missing Part:", missingPart)
 
 }
 
 func getPartNumber(matrix [][]rune) int {
-	const SPACE = '.'
+	partNumber := 0
 
-	for _, column := range matrix {
+	for y, column := range matrix {
 		digit := ""
-		for _, row := range column {
+		isPart := false
+		for x, row := range column {
 			valueAsString := string(row)
 			_, err := strconv.Atoi(valueAsString)
 			if err == nil {
 				digit += valueAsString
+				isPart = isSymbolNear(matrix, x, y)
 			} else {
 				if digit == "" {
 					continue // no point calculating if there's nothing to check
 				}
+				// we have the number!
+				// fmt.Printf("Digit: %s, Start: %d, End: %d\n", digit, digitStartIndex, digitEndIndex)
 
-				fmt.Println(digit)
+				// digit = "" // reset
+			}
+		}
 
-				// value, err := strconv.Atoi(string(matrix[y][x]))
-				// fmt.Println(value, err)
+		if isPart {
+			n, _ := strconv.Atoi(digit)
+			partNumber += n
+		}
+	}
+	return partNumber
+}
 
-				// get index of all characters around digit
-				// check surrounding area if symbol
-				// if symbol, add digit to count
+func isSymbolNear(matrix [][]rune, runeX int, runeY int) bool {
+	const SPACE = '.'
 
-				digit = "" // reset
+	vectorsToCheck := [][]int{
+		{runeX - 1, runeY - 1}, // top left
+		{runeX, runeY - 1},     // top
+		{runeX + 1, runeY - 1}, // top right
+		{runeX + 1, runeY},     // right
+		{runeX + 1, runeY + 1}, // bottom right
+		{runeX, runeY + 1},     // bottom
+		{runeX - 1, runeY + 1}, // bottom left
+		{runeX - 1, runeY},     // left
+	}
+
+	// check surrounding area if symbol
+	for _, vector := range vectorsToCheck {
+		x := vector[0]
+		y := vector[1]
+
+		// out of range check
+		if x < 0 || y < 0 {
+			continue
+		}
+		if x >= len(matrix[0]) || y >= len(matrix) {
+			continue
+		}
+
+		adjacent := matrix[y][x]
+
+		if adjacent != SPACE {
+			adjacentAsInteger := int(adjacent - '0')
+			if adjacentAsInteger >= 0 && adjacentAsInteger <= 9 {
+				continue
+			} else {
+				// must be a symbol!
+				return true
 			}
 		}
 	}
-	return 1
-}
 
-func printMatrix(matrix [][]rune) {
-	for _, y := range matrix {
-		for _, x := range y {
-			fmt.Printf("%c", x)
-		}
-		fmt.Println()
-	}
+	return false
 }
 
 func getMatrix(file *os.File) [][]rune {

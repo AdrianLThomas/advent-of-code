@@ -32,20 +32,18 @@ func getPartNumber(matrix [][]rune) int {
 				digit += valueAsString
 				isPart = isSymbolNear(matrix, x, y)
 			} else {
-				if digit == "" {
-					continue // no point calculating if there's nothing to check
-				}
 				// we have the number!
 				// fmt.Printf("Digit: %s, Start: %d, End: %d\n", digit, digitStartIndex, digitEndIndex)
 
-				// digit = "" // reset
+				// add to total if part then reset
+				if isPart {
+					n, _ := strconv.Atoi(digit)
+					partNumber += n
+				}
+				digit = "" // reset
 			}
 		}
 
-		if isPart {
-			n, _ := strconv.Atoi(digit)
-			partNumber += n
-		}
 	}
 	return partNumber
 }
@@ -80,6 +78,8 @@ func isSymbolNear(matrix [][]rune, runeX int, runeY int) bool {
 		adjacent := matrix[y][x]
 
 		if adjacent != SPACE {
+			// adjacentAsString := string(adjacent)
+			// fmt.Print(adjacentAsString)
 			adjacentAsInteger := int(adjacent - '0')
 			if adjacentAsInteger >= 0 && adjacentAsInteger <= 9 {
 				continue

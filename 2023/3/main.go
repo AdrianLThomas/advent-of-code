@@ -40,20 +40,27 @@ func getPartNumber(matrix [][]rune) int {
 
 				// add to total if part then reset
 				if isPart {
-					n, _ := strconv.Atoi(digit)
-					partNumber += n
-
-					if n > 0 {
-						fmt.Println("Part:", n)
-					}
+					partNumber = calculateLatestPartNumber(digit, partNumber)
 				}
 				isPart = false
 				digit = "" // reset
 			}
 		}
-
+		// final check if number is end of line
+		if isPart {
+			partNumber = calculateLatestPartNumber(digit, partNumber)
+		}
 	}
 	return partNumber
+}
+
+func calculateLatestPartNumber(digit string, partNumber int) int {
+	n, _ := strconv.Atoi(digit)
+	if n > 0 {
+		fmt.Println("Part:", n)
+	}
+
+	return partNumber + n
 }
 
 func isSymbolNear(matrix [][]rune, runeX int, runeY int) bool {

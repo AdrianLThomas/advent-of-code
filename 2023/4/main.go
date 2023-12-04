@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -14,13 +15,14 @@ func main() {
 	scanner := bufio.NewScanner(file)
 
 	gameScore := 0
+	lineCount := 0
 	// read each line
 	for scanner.Scan() {
 		thisLine := scanner.Text()
+		lineCount++
 
 		// split line by colon, part [0] is ID, part [1] is game
 		lineParts := strings.Split(thisLine, ":")
-		// id, _ := strconv.Atoi(strings.Split(lineParts[0], " ")[1])
 		game := lineParts[1]
 
 		// split by pipe[0] to get winningNumbers and pipe[1] to get myNumbers
@@ -41,13 +43,10 @@ func main() {
 				}
 			}
 		}
-		if cardWinCount <= 2 {
-			gameScore += cardWinCount
-		} else {
-			gameScore += cardWinCount * 2
+
+		if cardWinCount >= 1 {
+			gameScore += int(math.Pow(2, float64(cardWinCount-1)))
 		}
-		// otherwise zero.
-		fmt.Println((gameScore)) // TODO ... test data ok, full input too low
 	}
 
 	fmt.Println("Game Score:", gameScore)

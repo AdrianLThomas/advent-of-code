@@ -23,4 +23,12 @@ for (let i = 0; i < leftList.length; i++) {
     totalDistance += Math.abs(leftList[i] - rightList[i])
 }
 
-console.log({answer: totalDistance})
+console.log({answerPart1: totalDistance})
+
+// part 2 - calculate total similarity score
+const similarity = leftList.map((value) => {
+    const matches = rightList.filter(num => num === value)
+    return value * matches.length
+}).reduce((acc, cur) => acc + cur)
+
+console.log({answerPart2: similarity})

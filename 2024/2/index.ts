@@ -1,6 +1,5 @@
-const file = Bun.file(import.meta.dir + "/input.txt");
-const content = await file.text();
-const lines = content.split("\n");
+const file = await Deno.readTextFile(new URL("./input.txt", import.meta.url));
+const lines = file.split("\n");
 
 const safeReports = lines.filter((line) => {
   const report = line.split(" ");

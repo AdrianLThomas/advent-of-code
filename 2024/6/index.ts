@@ -55,19 +55,23 @@ const findGuard = (matrix: string[][]): Guard => {
   throw new Error("404 guard not found");
 };
 
+const isWithinBounds = (map: string[][], currentGuardPosition: Coordinate) => {
+  const maxX = map[0].length - 1; // assuming it's an equal grid
+  const maxY = map.length - 1;
+  return (
+    currentGuardPosition.X >= 0 &&
+    currentGuardPosition.X <= maxX &&
+    currentGuardPosition.Y >= 0 &&
+    currentGuardPosition.Y <= maxY
+  );
+};
+
 const visitedPositions: Guard[] = [];
 const simulatePath = (
   map: string[][],
   guardStartingPosition: Guard
 ): Guard[] => {
-  //   const maxX = map[0].length - 1; // assuming it's an equal grid
-  //   const maxY = map.length - 1;
   let currentGuardPosition: Guard = structuredClone(guardStartingPosition);
-  //   const isGuardWithinBounds =
-  //     currentGuardPosition.position.X >= 0 &&
-  //     currentGuardPosition.position.X <= maxX &&
-  //     currentGuardPosition.position.Y >= 0 &&
-  //     currentGuardPosition.position.Y <= maxY;
   let isGuardOffGrid =
     guardStartingPosition.position.X === -1 &&
     guardStartingPosition.position.Y === -1;
@@ -104,52 +108,54 @@ const simulatePath = (
         };
         break;
     }
-    nextMoveChar = map[nextMoveCoords.Y][nextMoveCoords.X];
 
-    // make the guard move
-    switch (nextMoveChar) {
-      case SpaceChar.empty: {
-        // continue ahead
-        currentGuardPosition = {
-          position: nextMoveCoords,
-          direction: currentGuardPosition.direction,
-        };
-        break;
-      }
-      case SpaceChar.obstruction: {
-        // turn 90 deg right
-        let newDirection: Direction;
-        switch (currentGuardPosition.direction) {
-          case Direction.up: {
-            newDirection = Direction.right;
-            break;
-          }
-          case Direction.right: {
-            newDirection = Direction.down;
-            break;
-          }
-          case Direction.down: {
-            newDirection = Direction.left;
-            break;
-          }
-          case Direction.left: {
-            newDirection = Direction.up;
-            break;
-          }
+    const willGuardBeInBounds = isWithinBounds(map, nextMoveCoords);
+    if (willGuardBeInBounds) {
+      // make the guard move
+      nextMoveChar = map[nextMoveCoords.Y][nextMoveCoords.X];
+      switch (nextMoveChar) {
+        case SpaceChar.empty: {
+          // continue ahead
+          currentGuardPosition = {
+            position: nextMoveCoords,
+            direction: currentGuardPosition.direction,
+          };
+          break;
         }
-        currentGuardPosition = {
-          position: guardStartingPosition.position,
-          direction: newDirection,
-        };
-        break;
+        case SpaceChar.obstruction: {
+          // turn 90 deg right
+          let newDirection: Direction;
+          switch (currentGuardPosition.direction) {
+            case Direction.up: {
+              newDirection = Direction.right;
+              break;
+            }
+            case Direction.right: {
+              newDirection = Direction.down;
+              break;
+            }
+            case Direction.down: {
+              newDirection = Direction.left;
+              break;
+            }
+            case Direction.left: {
+              newDirection = Direction.up;
+              break;
+            }
+          }
+          currentGuardPosition = {
+            position: guardStartingPosition.position,
+            direction: newDirection,
+          };
+          break;
+        }
       }
-      case undefined:
-        isGuardOffGrid = true;
-        currentGuardPosition = {
-          position: { X: -1, Y: -1 },
-          direction: Direction.up, // irrelevant
-        };
-        break;
+    } else {
+      isGuardOffGrid = true;
+      currentGuardPosition = {
+        position: { X: -1, Y: -1 },
+        direction: Direction.up, // irrelevant
+      };
     }
 
     const newMap = structuredClone(map);

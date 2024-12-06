@@ -56,21 +56,21 @@ const findGuard = (matrix: string[][]): Guard => {
 };
 
 const isWithinBounds = (map: string[][], currentGuardPosition: Coordinate) => {
-  const maxX = map[0].length - 1; // assuming it's an equal grid
-  const maxY = map.length - 1;
+  const maxX = map[0].length; // assuming it's an equal grid
+  const maxY = map.length;
   return (
     currentGuardPosition.X >= 0 &&
-    currentGuardPosition.X <= maxX &&
+    currentGuardPosition.X < maxX &&
     currentGuardPosition.Y >= 0 &&
-    currentGuardPosition.Y <= maxY
+    currentGuardPosition.Y < maxY
   );
 };
 
 const visitedPositions: Guard[] = [];
-const simulatePath = (
+const simulatePath = async (
   map: string[][],
   guardStartingPosition: Guard
-): Guard[] => {
+): Promise<Guard[]> => {
   let currentGuardPosition: Guard = structuredClone(guardStartingPosition);
   let isGuardOffGrid =
     guardStartingPosition.position.X === -1 &&
@@ -109,6 +109,7 @@ const simulatePath = (
         break;
     }
 
+    await Deno.writeTextFile("/tmp/map.txt", map.toString()); // TODO, weird, this "fixes" the callstack bug.. but it got me the answer, YOLO.
     const willGuardBeInBounds = isWithinBounds(map, nextMoveCoords);
     if (willGuardBeInBounds) {
       // make the guard move
@@ -178,7 +179,10 @@ const simulatePath = (
 };
 
 const guardStartingPosition = findGuard(map);
-const recordedPositions: Guard[] = simulatePath(map, guardStartingPosition!);
+const recordedPositions: Guard[] = await simulatePath(
+  map,
+  guardStartingPosition!
+);
 const distinctPositions = recordedPositions.filter((o1, index, self) => {
   return (
     index ===
